@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="NoticeReplyMapper">
+    
+    <insert id="insertReply" parameterType="com.wpp.domain.NoticeReply" useGeneratedKeys="true" keyProperty="rnum">
+        INSERT INTO notice_reply (rnum, bnum, replytext, replyer ,regroup, restep, reindent)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 0,0)
+		
+    </insert>
+   
+    <update id="create_setgroup" parameterType="com.wpp.domain.NoticeReply">
+    	UPDATE notice_reply
+        SET regroup = #{rnum}
+        WHERE rnum = #{rnum}
+    </update>
+    
+    <!-- 댓글입력할때 그룹넘버 설정 ㅁㅇㅇㅈㅇ실패-->
+    <update id="setreGroup" parameterType="com.wpp.domain.NoticeReply" useGeneratedKeys="true">
+    	UPDATE notice_reply set regroup = last_insert_id()    	
+    </update>
+    
+    <select id="listReply" resultType="com.wpp.domain.NoticeReply">
+        SELECT rnum, bnum, replytext, replyer, date ,regroup, restep, reindent
+        FROM notice_reply
+        WHERE bnum = #{bnum}
+        ORDER BY regroup asc, restep asc, reindent asc
+    </select>
+    
+    <select id="replymodifyview" resultType="com.wpp.domain.NoticeReply">
+        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent FROM notice_reply
+        WHERE rnum = #{rnum}
+    </select>
+    
+    <update id="updateReply">
+        UPDATE notice_reply
+        SET replytext = #{replytext}
+        WHERE rnum = #{rnum}
+    </update>
+    
+    <delete id="deleteReply">
+        DELETE FROM notice_reply
+        WHERE rnum = #{rnum}
+    </delete>
+    
+    <insert id="insertReplyComment">
+    	INSERT INTO notice_reply (rnum, bnum, replytext, replyer ,regroup, restep , reindent)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, #{regroup} ,#{restep}+1 , #{reindent}+1) 
+    </insert>
+    
+    <update id="replyStepShape">
+    	UPDATE notice_reply
+    	SET restep = restep + 1
+    	WHERE regroup = #{regroup} and restep > #{restep} 
+    </update>
+</mapper>
+    
+ 

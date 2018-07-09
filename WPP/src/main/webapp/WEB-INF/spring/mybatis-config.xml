@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- mapper들  -->
+  <mappers>
+    <mapper resource="com/wpp/mapper/UserMapper.xml"/>
+    <mapper resource="com/wpp/mapper/WebBoardMapper.xml"/>
+    <mapper resource="com/wpp/mapper/WebReplyMapper.xml"/>
+   
+ 
+    <mapper resource="com/wpp/mapper/GalleryMapper.xml"/>
+  	
+    <mapper resource="com/wpp/mapper/FreeBoardMapper.xml"/>
+    <mapper resource="com/wpp/mapper/FreeReplyMapper.xml"/>
+ 	
+ 	<mapper resource="com/wpp/mapper/NoticeMapper.xml"/>
+ 	<mapper resource="com/wpp/mapper/NoticeReplyMapper.xml"/>
+ 	
+ 	<mapper resource="com/wpp/mapper/QnAMapper.xml"/>
+ 	<mapper resource="com/wpp/mapper/QnAReplyMapper.xml"/>
+ 	<mapper resource="com/wpp/mapper/AdminMapper.xml"/>
+  </mappers>
+	
+</configuration>

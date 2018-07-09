@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="FreeReplyMapper">
+     
+    <!-- 댓글 입력 -->
+    <insert id="insertReply" parameterType="com.wpp.domain.FreeReply" useGeneratedKeys="true" keyProperty="rnum">
+        INSERT INTO free_reply (rnum, bnum, replytext, replyer ,regroup, restep, reindent)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 1,0)	
+    </insert>
+   
+    <!-- 그룹 이름 설정-->
+    <update id="create_setgroup" parameterType="com.wpp.domain.FreeReply">
+    	UPDATE free_reply
+        SET regroup = #{rnum}
+        WHERE rnum = #{rnum}
+    </update>
+    
+    
+    <!-- 댓글 목록 -->
+    <select id="listReply" resultType="com.wpp.domain.FreeReply">
+        SELECT rnum, bnum, replytext, replyer, date ,regroup, restep, reindent
+        FROM free_reply
+        WHERE bnum = #{bnum}
+        ORDER BY regroup asc, restep asc, reindent asc
+    </select>
+    
+       <!-- 수정할 댓글 보기 -->
+    <select id="replymodifyview" resultType="com.wpp.domain.FreeReply">
+        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent FROM free_reply
+        WHERE rnum = #{rnum}
+    </select>
+    
+       <!-- 댓글 수정 -->
+    <update id="updateReply">
+        UPDATE free_reply
+        SET replytext = #{replytext}
+        WHERE rnum = #{rnum}
+    </update>
+    
+     <!--  댓글 삭제 -->
+    <delete id="deleteReply">
+        DELETE FROM free_reply
+        WHERE rnum = #{rnum}
+    </delete>
+    
+    <!--  댓글 코맨트 -->
+    <insert id="insertReplyComment">
+    	INSERT INTO free_reply (rnum, bnum, replytext, replyer ,regroup, restep , reindent)
+    	VALUES (0, #{bnum}, #{replytext}, #{replyer}, #{regroup} ,#{restep}+1 , #{reindent}+1)
+    	
+     
+    </insert>
+    
+    <!-- 스탭  순서 정리하기 -->
+    <update id="replyStepShape">
+    UPDATE free_reply
+	SET restep = restep +1
+    	WHERE regroup = #{regroup} and restep > #{restep} 
+    </update>
+    
+</mapper>
