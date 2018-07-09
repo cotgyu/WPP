@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ <mapper namespace="GalleryMapper">
+ 
+	<!-- 갤러리 리스트  -->
+	<select id="viewimglist" resultType="com.wpp.domain.Gallery">	
+	 	SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter
+	 	FROM gallery 
+   		<include refid="search2"></include> 
+		ORDER BY imgid desc, imgdate desc LIMIT ${start}, 20;	
+	</select>
+	
+	<!-- 추천순 정렬 -->
+	<select id="uplist" resultType="com.wpp.domain.Gallery">		
+	 	SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter
+	 	FROM gallery
+		<include refid="search2"></include> 
+		ORDER BY imgup desc LIMIT ${start}, 20; 	
+	</select>
+	
+	<!-- 이미지 등록 -->
+ 	<insert id="insertimage">
+ 		INSERT INTO gallery(imgid, imgname, imgfile, imgup ,imgwriter) values (#{imgid},#{imgname},#{imgfile},0,#{imgwriter}) 
+ 	</insert>
+ 
+    
+ 	<!-- 이미지  추천 -->
+ 	<update id="upimage">
+ 		UPDATE gallery set imgup = imgup +1 
+ 		where imgid= #{#imgid}
+ 	</update>
+ 
+   	<!-- 이미지 삭제 -->
+    <delete id="deleteimage">
+        DELETE FROM gallery
+        WHERE imgid = #{imgid}
+    </delete>
+	
+	<!-- 메인화면에 표시될 인기 갤러리 -->
+	<select id="popimglist" resultType="com.wpp.domain.Gallery">
+		SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter	 	
+	 	from gallery order by imgup desc limit 4;
+	</select>
+	
+	<!-- 갤러리 수 카운트  -->
+	<select id="countboard" resultType="int">
+		SELECT COUNT(*) FROM gallery
+		<!-- where절을 include 태그로 삽입 -->
+		<include refid="search2"></include>
+	</select>
+	
+	<!-- 검색 -->
+	<sql id="search2">
+    	<choose>
+        	<!-- 검색옵션이 전체 검색일 경우 -->
+        	<when test="searchOption == 'all'">
+            	WHERE imgwriter like '%${keyword}%'
+            	OR imgname like '%${keyword}%'
+        	</when>
+        	<!-- 전체 검색이 아닐 경우 -->
+        	<otherwise>
+            	WHERE ${searchOption} like '%${keyword}%'
+        	</otherwise>
+    	</choose>
+	</sql>
+ 
+ </mapper>

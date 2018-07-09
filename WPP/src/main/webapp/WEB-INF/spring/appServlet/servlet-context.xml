@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:security="http://www.springframework.org/schema/security"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		">
+	<context:component-scan base-package="com.wpp"/>
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+	<mvc:annotation-driven/>
+	
+	<!--  security  -->
+	<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" />
+
+	<!-- 업로드위치, 리소스, css등 위치  -->
+	<mvc:resources location="uploads" mapping="/uploasds/**" />
+	<mvc:resources location="/editors/" mapping="/editors/**" />	
+	<mvc:resources location="profile" mapping="/profile/**" />
+	<mvc:resources location="/resources/" mapping="/resources/**" />
+	<mvc:resources location="/stylesheets/" mapping="/stylesheets/**" />	
+	<mvc:resources location="javasripts" mapping="/javascripts/**" />
+	
+	<!-- 파일업로드에 필요한 bean -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 파일업로드 용량 -->
+		<property name="maxUploadSize" value="20971520" /> <!-- 20MB -->
+	 	 <!-- max size of file in memory (in bytes) -->
+  		<property name="maxInMemorySize" value="1048576" /> <!-- 1MB -->
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/WEB-INF/views/"
+		p:suffix=".jsp" />
+	
+	<!-- 회원가입 오류시 뜨는 메시지 쓰기위한 bean  -->
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" 
+		p:basename="message"
+		p:defaultEncoding="UTF-8"
+	/>
+
+</beans>

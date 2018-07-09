@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+ xmlns:beans="http://www.springframework.org/schema/beans" 
+ xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+  http://www.springframework.org/schema/security 
+  http://www.springframework.org/schema/security/spring-security-3.1.xsd
+  http://www.springframework.org/schema/util 
+  http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+  
+	
+	<http auto-config="true" use-expressions="true" >
+	<!-- 권한 설정 -->
+		<intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_ADMIN')" />
+				
+		<intercept-url pattern="/webboard/write/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/freeboard/write/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/qna/write/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		
+		<intercept-url pattern="/webboard/updatedetail/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/freeboard/updatedetail/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/qna/updatedetail/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		
+		<intercept-url pattern="/webboard/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/freeboard/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/qna/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+			
+		<intercept-url pattern="/users/myinfo/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/users/formmessage/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/users/message/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/users/unregisterform/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+			
+		<intercept-url pattern="/notice/write/**" access="hasAnyRole('ROLE_ADMIN')" />	
+		<intercept-url pattern="/notice/updatedetail/**" access="hasAnyRole('ROLE_ADMIN')" />	
+		<intercept-url pattern="/notice/delete/**" access="hasAnyRole('ROLE_ADMIN')" />	
+		
+		<intercept-url pattern="/webreply/comment/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/webreply/update/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />		
+		<intercept-url pattern="/webreply/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/freereply/comment/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/freereply/update/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/freereply/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />		
+		<intercept-url pattern="/qnareply/comment/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/qnareply/update/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />
+		<intercept-url pattern="/qnareply/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/noticereply/comment/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/noticereply/update/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		<intercept-url pattern="/noticereply/delete/**" access="hasAnyRole('ROLE_USER','ROLE_ADMIN')" />	
+		
+		<form-login 
+			login-page="/" 
+			username-parameter="user_id"
+			password-parameter="password" 
+		
+			authentication-success-handler-ref="signinSuccessHandler"
+			authentication-failure-handler-ref="signinFailureHandler"
+			default-target-url="/users/mypage" 
+			always-use-default-target="false" />
+			
+		<logout invalidate-session="true" logout-success-url="/signin"
+			logout-url="/signout" />
+			<access-denied-handler ref="accessFailureHandler" />
+	</http>
+	
+	<beans:bean id="signinSuccessHandler" class="com.wpp.security.SigninSuccessHandler" />
+	<beans:bean id="signinFailureHandler" class="com.wpp.security.SigninFailureHandler">
+		<beans:property name="defaultFailureUrl" value="/users/signin?error=true" />
+	</beans:bean> 
+	<!-- 권한이 없을때 처리하는 클래스(ex유저권한인데 어드민권한이 필요한 곳에 들어갈려할때 ) -->
+	<beans:bean id="accessFailureHandler" class="com.wpp.security.AccessFailureHandler">
+	<beans:property name="errorPage" value="/403" />
+	</beans:bean>
+
+	<beans:bean id="customAuthenticationProvider" class="com.wpp.security.CustomAuthenticationProvider" />
+
+	<beans:bean id="userService" class="com.wpp.service.UserService" />
+	<!-- 암호화  -->
+	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	<beans:bean id="encoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" />
+	<!--  없어도 되는듯? 암호화의 다른 방식인듯 함..
+	<beans:bean id="saltSource" class="org.springframework.security.authentication.dao.ReflectionSaltSource">
+		<beans:property name="userPropertyToUse" value="username" />
+	</beans:bean>
+	-->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="customAuthenticationProvider" />
+		<!--  
+		<authentication-provider user-service-ref="userService">
+			<password-encoder ref="encoder">
+				<salt-source ref="saltSource" />
+			</password-encoder>
+		</authentication-provider>
+		-->
+	</authentication-manager>
+
+
+</beans:beans> 

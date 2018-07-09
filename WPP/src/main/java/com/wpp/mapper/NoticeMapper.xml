@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ <mapper namespace="NoticeMapper">
+ 
+ 	<insert id="insert">
+        INSERT INTO notice ( bnum, title, content, writer) VALUES (#{bnum},#{title},#{content},#{writer})
+    </insert>
+    
+     <select id="view" resultType="com.wpp.domain.Notice">
+        SELECT * FROM notice
+        WHERE bnum = #{bnum}
+    </select>
+ 
+ 	<update id="uphit">
+        UPDATE notice SET hit = hit + 1 
+        WHERE bnum = #{bnum}
+    </update>
+    
+    <update id="updateArticle">
+        UPDATE notice SET
+        	title = #{title},
+            content = #{content}
+        WHERE bnum = #{bnum}
+    </update>
+    
+    <delete id="delete">
+        DELETE FROM notice
+        WHERE bnum = #{bnum}
+    </delete>
+ 	
+ 	<select id="viewlist" resultType="com.wpp.domain.Notice">	
+	 	SELECT bnum, title, content, writer, date, hit,
+        (SELECT COUNT(*) FROM notice_reply WHERE bnum= b.bnum) AS recnt
+	 	FROM notice b
+   		<include refid="search"></include>
+		ORDER BY bnum desc, date desc LIMIT ${start}, 20;
+	</select>
+	
+	<select id="countboard" resultType="int">
+		SELECT COUNT(*) FROM notice
+		<include refid="search"></include>
+	</select>
+	
+	<select id="modifyview" resultType="com.wpp.domain.Notice">
+        SELECT bnum, title, content, writer, date, hit FROM notice
+        WHERE bnum = #{bnum}
+    </select>
+    
+	<select id="findByWriter" resultType="string">
+ 		select writer from notice where bnum= #{bnum}
+ 	</select>
+
+	<sql id="search">
+	    <choose>
+	        <when test="searchOption == 'all'">
+	            WHERE writer like '%${keyword}%'
+	            OR content like '%${keyword}%'
+	            OR title like '%${keyword}%'
+	        </when>
+	        <otherwise>
+	            WHERE ${searchOption} like '%${keyword}%'
+	        </otherwise>
+	    </choose>
+	</sql>
+	 
+
+
+ </mapper>
