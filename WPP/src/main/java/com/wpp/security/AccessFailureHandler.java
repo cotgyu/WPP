@@ -40,7 +40,7 @@ public class AccessFailureHandler implements AccessDeniedHandler {
 		String message = exception.getMessage();
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		response.setCharacterEncoding("EUC-KR");
-		String data = StringUtils.join(new String[] { " ������ �����ϴ�. " });
+		String data = StringUtils.join(new String[] { "권한이 없습니다. 정상적인 경로로 이용해주세요! " });
 		PrintWriter out = response.getWriter();
 		out.print(data);
 		out.flush();

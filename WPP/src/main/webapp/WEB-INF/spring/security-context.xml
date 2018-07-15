@@ -69,7 +69,7 @@
 	<beans:bean id="signinFailureHandler" class="com.wpp.security.SigninFailureHandler">
 		<beans:property name="defaultFailureUrl" value="/users/signin?error=true" />
 	</beans:bean> 
-	<!-- 권한이 없을때 처리하는 클래스(ex유저권한인데 어드민권한이 필요한 곳에 들어갈려할때 ) -->
+	<!-- 권한이 없을때 처리하는 클래스(ex유저권한인데 어드민권한이 필요한 곳에 들어갈려할때 == 403에러: 접근금지) -->
 	<beans:bean id="accessFailureHandler" class="com.wpp.security.AccessFailureHandler">
 	<beans:property name="errorPage" value="/403" />
 	</beans:bean>

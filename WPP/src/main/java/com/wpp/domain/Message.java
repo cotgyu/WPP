@@ -3,11 +3,11 @@ package com.wpp.domain;
 import java.util.Date;
 
 public class Message {
-	private int mnum; //�޽��� ��ȣ
-	private String senduser;	//������
-	private String receiver;	//�޴���
-	private String content;	//�޽��� ����
-	private Date date;	//�޽��� ��¥
+	private int mnum; //메시지 번호
+	private String senduser;	//보낸이
+	private String receiver;	//받는이
+	private String content;	//메시지 내용
+	private Date date;	//메시지 날짜
 	
 	
 	public int getMnum() {

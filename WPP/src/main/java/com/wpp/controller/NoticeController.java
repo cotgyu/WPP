@@ -34,7 +34,7 @@ public class NoticeController {
 	@Autowired
 	private UserService userService;
 	
-	//�������� ����Ʈ
+	//공지사항 리스트
 	@RequestMapping("/list")
 	public ModelAndView list(@RequestParam(defaultValue="title") String searchOption, 
 			@RequestParam(defaultValue="") String keyword,
@@ -66,13 +66,13 @@ public class NoticeController {
         return mav; 
 	}
 	
-	// ���� �ۼ�ȭ�� �̵�
+	// 공지 작성화면 이동
 	@RequestMapping(value="write", method=RequestMethod.GET)
     public String write(){
         return "notice/write"; 
     }
 	
-	// ���� �ۼ�
+	// 공지 작성
 	@RequestMapping(value="insert", method=RequestMethod.POST)
 	public String insert(@ModelAttribute Notice vo, HttpSession session) throws Exception{
 	   
@@ -83,7 +83,7 @@ public class NoticeController {
 	    return "redirect:list";
 	}
 
-	// �Խù� ����
+	// 게시물 보기
 	@RequestMapping(value="view", method=RequestMethod.GET)
     public ModelAndView view(@RequestParam int bnum, HttpSession session) throws Exception{
       
@@ -101,7 +101,7 @@ public class NoticeController {
         return mav;
     }
   
-	//�� ����â���� ����     
+	//글 수정창으로 연결     
     @RequestMapping(value="/updatedetail/{bnum}", method=RequestMethod.GET)
     public ModelAndView boardDetail(@PathVariable("bnum") Integer bnum, ModelAndView mav){
         Notice vo = noticeService.detail(bnum);
@@ -112,14 +112,14 @@ public class NoticeController {
      
         return mav;
     }
-    // �Խñ� ����
+    // 게시글 수정
       @RequestMapping(value="update", method=RequestMethod.POST)
     public String update(@ModelAttribute Notice vo) throws Exception{
     	noticeService.update(vo);
         return "redirect:list";
     }
    
-    // �Խñ� ����
+    // 게시글 삭제
     @RequestMapping("delete")
     public String delete(@RequestParam int bnum) throws Exception{
     	noticeService.delete(bnum);

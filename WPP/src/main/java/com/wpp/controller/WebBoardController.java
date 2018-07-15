@@ -43,7 +43,7 @@ public class WebBoardController {
 	@Autowired
 	UserService userService;
 	
-	//�Խ��� ����Ʈ
+	//게시판 리스트
 	@RequestMapping("/list")
 	public ModelAndView list(@RequestParam(defaultValue="title") String searchOption, @RequestParam(defaultValue="") String keyword,
 			@RequestParam(defaultValue="1") int curPage) throws Exception{
@@ -74,13 +74,13 @@ public class WebBoardController {
 	}
 	
 	
-	// �Խù� �ۼ�ȭ�� �̵�
+	// 게시물 작성화면 이동
 	@RequestMapping(value="write", method=RequestMethod.GET)
     public String write(){
         return "webboard/write"; 
     }
 	
-	// �Խù� �ۼ�
+	// 게시물 작성
 	@RequestMapping(value="insert", method=RequestMethod.POST)
 	public String insert(@ModelAttribute WebBoard vo, HttpSession session) throws Exception{
 	
@@ -91,7 +91,7 @@ public class WebBoardController {
 	    return "redirect:list";
 	}
 
-	// �Խù� ����
+	// 게시물 보기
 	@RequestMapping(value="view", method=RequestMethod.GET)
     public ModelAndView view(@RequestParam int bnum, HttpSession session) throws Exception{
        
@@ -109,7 +109,7 @@ public class WebBoardController {
         return mav;
     }
 	
-	//�� ����â���� ����     
+	//글 수정창으로 연결     
     @RequestMapping(value="/updatedetail/{bnum}", method=RequestMethod.GET)
     public ModelAndView boardDetail(@PathVariable("bnum") Integer bnum, ModelAndView mav) throws Exception{
         WebBoard vo = webboardService.detail(bnum);
@@ -121,21 +121,21 @@ public class WebBoardController {
         return mav;
     }
   
-    // �Խñ� ����
+    // 게시글 수정
     @RequestMapping(value="update", method=RequestMethod.POST)
     public String update(@ModelAttribute WebBoard vo) throws Exception{
     	webboardService.update(vo);
         return "redirect:list";
     }
    
-    // �Խñ� ����
+    // 게시글 삭제
     @RequestMapping("delete")
     public String delete(@RequestParam int bnum) throws Exception{
     	webboardService.delete(bnum);
         return "redirect:list";
     }
 	
-    //�Խ��� ���� ���ε�
+    //게시판 사진 업로드
     @RequestMapping(value="/photoUpload")
     public String photoUpload(HttpServletRequest request, PhotoVo vo){
         String callback = vo.getCallback();
@@ -143,22 +143,22 @@ public class WebBoardController {
         String file_result = "";
         try {
             if(vo.getFiledata() != null && vo.getFiledata().getOriginalFilename() != null && !vo.getFiledata().getOriginalFilename().equals("")){
-                //������ �����ϸ�
+                //파일이 존재하면
                 String original_name = vo.getFiledata().getOriginalFilename();
                 String ext = original_name.substring(original_name.lastIndexOf(".")+1);
-                //���� �⺻���
+                //파일 기본경로
                 String defaultPath = request.getSession().getServletContext().getRealPath("/");
-                //���� �⺻��� _ �󼼰��
+                //파일 기본경로 _ 상세경로
                 String path = defaultPath + "resources" + File.separator + "Editors" + File.separator +"uploadimg" + File.separator;             
                 File file = new File(path);
                 
-                //���丮 �������� ������� ���丮 ����
+                //디렉토리 존재하지 않을경우 디렉토리 생성
                 if(!file.exists()) {
                     file.mkdirs();
                 }
-                //���ε� �� ���ϸ�
+                //업로드 할 파일명
                 String realname = UUID.randomUUID().toString() + "." + ext;
-            ///////////////// ������ ���Ͼ��� /////////////////
+            ///////////////// 서버에 파일쓰기 /////////////////
                 vo.getFiledata().transferTo(new File(path+realname));
                 file_result += "&bNewLine=true&sFileName="+original_name+"&sFileURL=/resources/Editors/uploadimg/"+realname;
             } else {

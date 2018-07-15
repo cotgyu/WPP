@@ -18,17 +18,17 @@ import com.wpp.security.Role;
 
 public class User implements UserDetails { 
 	@NotEmpty @Size(min=4, max=12)
-	private String userid;			//ȸ�����̵�
+	private String userid;			//회원아이디
 	@NotEmpty @Size(min=4, max=12)
-	private String password;		//ȸ�� �н�����
+	private String password;		//회원 패스워드
 	@NotEmpty
-	private String name;			//ȸ�� �̸�
+	private String name;			//회원 이름
 	@Email
-	private String email;			//ȸ�� �̸���
+	private String email;			//회원 이메일
 
-	private String profileimg;		//ȸ�� �����ʻ���
-	private Date joindate;			//���Գ�¥
-	//�̺κ� ã�ƺ��� 
+	private String profileimg;		//회원 프로필사진
+	private Date joindate;			//가입날짜
+	//이부분 찾아보기 
 	private List<Role> authorities;
 	private boolean accountNonExpired = true;
 	private boolean accountNonLocked = true;
@@ -97,7 +97,7 @@ public class User implements UserDetails {
 		return "User [userid=" + userid + ", password=" + password + ", name=" + name + ", email=" + email + ", profileimg="+profileimg+", joindate=" +joindate+" ]";
 	}
 
-	//��ť��Ƽ �α��� ����..?	
+	//시큐리티 로그인 관련..?	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.authorities;
@@ -142,7 +142,7 @@ public class User implements UserDetails {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-//�ڵ尡 �������� �Ф� ���� �����϶����� ���������� ��������..�Ф�
+	//코드가 더러워짐 ㅠㅠ 유저 디테일때문에 유저네임을 설정했음..ㅠㅠ
 	@Override
 	public String getUsername() {
 		return userid;

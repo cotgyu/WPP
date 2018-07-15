@@ -38,18 +38,18 @@ public class HomeController {
 	@Autowired
 	private UserDao userDao;
 
-	//����ȭ��
+	//메인화면
 	@RequestMapping("/")
 	public ModelAndView Home(HttpSession session) throws Exception{
-		//�α�Խ��� ��������
+		//인기게시판 가져오기
 		List<WebBoard> poplist = webboardDao.popboard();
 		List<FreeBoard> popFlist = freeboardDao.popboard();
 		List<Gallery> popImglist = galleryDao.poplist();
 		List<QnA> popQnalist = qnaDao.popboard();
-		//�ֽ� �� ��������
+		//최신 글 가져오기
 		List<WebBoard> recentlist = webboardDao.recentboard(); 
 	
-		//�����͸� �ʿ� ����
+		//데이터를 맵에 저장
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		map.put("poplist", poplist);

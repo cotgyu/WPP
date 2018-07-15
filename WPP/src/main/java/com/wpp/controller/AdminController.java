@@ -40,7 +40,7 @@ public class AdminController {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
-	//������ ��й�ȣ Ȯ�� â���� �̵�
+	//관리자 비밀번호 확인창으로 이동
 	@RequestMapping(value="adminform")
     public ModelAndView form() throws Exception{
         ModelAndView mav = new ModelAndView();
@@ -48,19 +48,19 @@ public class AdminController {
         return mav;
     }
 	
-	//��й�ȣ �Է� �� ������ Ȯ�� 
+	//비밀번호 입력 후 관리자 확인
 	@RequestMapping(value="login", method=RequestMethod.POST)
     public ModelAndView login(@RequestParam String password) throws Exception{
-		//������ ���� ã�� 
+		//관리자 유저 찾기
 		User user = userService.findByID("관리자");
 		
-		//�Է��� ��й�ȣ�� ������ ���� ��й�ȣ �� 
+		//입력한 비밀번호화 관리자 비밀번호 비교 
 		if(passwordEncoder.matches(password ,user.getPassword())){
 			ModelAndView mav = new ModelAndView();
 			mav.setViewName("redirect:/admin/list");
 			return mav;
 		}
-		//��й�ȣ ������ â �̵� 
+		//비밀번호 오류시 실패창 이동
 		else{
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/admin/loginfail");
@@ -69,104 +69,100 @@ public class AdminController {
     }
 	
 	
-	//�Խù� ��� �����ֱ�
+	//모든 게시물 모여주기 
 	@RequestMapping(value="list")
     public ModelAndView list(@RequestParam(defaultValue="title") String searchOption, 
 			@RequestParam(defaultValue="") String keyword,
 			@RequestParam(defaultValue="1") int curPage) throws Exception{
 		
 		
-		//���ڵ��� ����
+		//글 카운트 
 		int count = adminService.countboard(searchOption, keyword);
-		//������
+		//페이지 설정 관련
 		BoardPage boardPage = new BoardPage(count, curPage);
 		int start = boardPage.getPageBegin();
 		int end = boardPage.getPageEnd();
 		List<WebBoard> list = adminService.Viewlist(start, end, searchOption, keyword);
 		
 		
-		//�����͸� �ʿ� ����
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("list", list); //list
-		map.put("count", count); //���ڵ� ����
-		map.put("searchOption", searchOption); //�˻� �ɼ�
-		map.put("keyword", keyword); //�˻� Ű����
+		map.put("count", count); //글 개수 
+		map.put("searchOption", searchOption); //검색 옵션
+		map.put("keyword", keyword); //검색 키워드 
 		map.put("boardPage", boardPage); 
 		
-		//�𵨰� ��
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("map", map); // �ʿ� ����� �����͸� mav(�� �� ��)�� ����
+		mav.addObject("map", map); //맵에 저장된 데이터를 Model And View 에 저장
     			
 		mav.setViewName("/admin/adminmode");
 		return mav;
 	
     }
 	
-	//��� ��� �����ֱ�
+	//모든 댓글 보기 
 		@RequestMapping(value="replylist")
 	    public ModelAndView replylist(@RequestParam(defaultValue="replytext") String searchOption, 
 				@RequestParam(defaultValue="") String keyword,
 				@RequestParam(defaultValue="1") int curPage) throws Exception{
 			
 			
-			//���ڵ��� ����
+			//댓글 카운트
 			int countreply = adminService.countreply(searchOption, keyword);
-			//������
+			//페이지 설정 
 			BoardPage boardPage = new BoardPage(countreply, curPage);
 			int start = boardPage.getPageBegin();
 			int end = boardPage.getPageEnd();
 			List<WebReply> list = adminService.Viewreplylist(start, end, searchOption, keyword);
 			
-			//�����͸� �ʿ� ����
+
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", list); //list
-			map.put("countreply", countreply); //���ڵ� ����
-			map.put("searchOption", searchOption); //�˻� �ɼ�
-			map.put("keyword", keyword); //�˻� Ű����
+			map.put("list", list); 
+			map.put("countreply", countreply); 
+			map.put("searchOption", searchOption); 
+			map.put("keyword", keyword); 
 			map.put("boardPage", boardPage); 
 			
-			//�𵨰� ��
 			ModelAndView mav = new ModelAndView();
-			mav.addObject("map", map); // �ʿ� ����� �����͸� mav�� ����
+			mav.addObject("map", map); 
 	    			
 			mav.setViewName("/admin/adminmode_reply");
 			return mav;
 		
 	    }
 	
-		//���� ����Ʈ 
+		//모든 유저 보기 
 		@RequestMapping(value="userlist")
 	    public ModelAndView userlist(@RequestParam(defaultValue="name") String searchOption, 
 				@RequestParam(defaultValue="") String keyword,
 				@RequestParam(defaultValue="1") int curPage) throws Exception{
 			
 			
-			//���ڵ��� ����
+			
 			int countuser = adminService.countuser(searchOption, keyword);
-			//������
+		
 			BoardPage boardPage = new BoardPage(countuser, curPage);
 			int start = boardPage.getPageBegin();
 			int end = boardPage.getPageEnd();
 			List<User> list = adminService.Viewuserlist(start, end, searchOption, keyword);
 			
-			//�����͸� �ʿ� ����
+			
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("list", list); //list
-			map.put("countuser", countuser); //���ڵ� ����
-			map.put("searchOption", searchOption); //�˻� �ɼ�
-			map.put("keyword", keyword); //�˻� Ű����
+			map.put("list", list);
+			map.put("countuser", countuser); 
+			map.put("searchOption", searchOption); 
+			map.put("keyword", keyword); 
 			map.put("boardPage", boardPage); 
 			
-			//�𵨰� ��
 			ModelAndView mav = new ModelAndView();
-			mav.addObject("map", map); // �ʿ� ����� �����͸� mav�� ����
+			mav.addObject("map", map);
 	    			
 			mav.setViewName("/admin/adminmode_users");
 			return mav;
 		
 	    }
 		
-		//������ ȸ��Ż��
+		//유저 탈퇴 시키기 
 		@RequestMapping("/userunregister/{username}")
 		public ModelAndView userUnregi(@PathVariable("username") String username){
 			

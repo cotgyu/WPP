@@ -28,7 +28,7 @@ public class QnAReplyController {
     @Autowired
     QnAReplyService qnareplyService;
     
-    // ��� �Է�
+    // 댓글 입력
     @RequestMapping(value="insert.do", method=RequestMethod.POST)
     public ModelAndView insert(@ModelAttribute QnAReply vo, HttpSession session,@RequestParam int bnum, @RequestParam String replytext){
     	
@@ -51,7 +51,7 @@ public class QnAReplyController {
   
     }
       
-    // ��� ���
+    // 댓글 목록
     @RequestMapping("list.do")
     public ModelAndView list(@RequestParam int bnum, ModelAndView mav){
         List<QnAReply> list = qnareplyService.list(bnum);
@@ -64,7 +64,7 @@ public class QnAReplyController {
         return mav;
     }
       
-    //��� ����
+    //댓글 삭제
     @RequestMapping("delete")
     public ModelAndView replydelete(@RequestParam int rnum, @RequestParam int bnum) throws Exception{
     	qnareplyService.delete(rnum);
@@ -76,7 +76,7 @@ public class QnAReplyController {
     	return mav;
     }
     
-    //��� ����â���� ����     
+    //댓글 수정창으로 연결     
     @RequestMapping(value="/detail/{rnum}", method=RequestMethod.GET)
     public ModelAndView replyDetail(@PathVariable("rnum") Integer rnum, ModelAndView mav){
         QnAReply vo = qnareplyService.detail(rnum);
@@ -88,7 +88,7 @@ public class QnAReplyController {
         return mav;
     }
     
-    //��� ����
+    //댓글 수정
     @RequestMapping(value="update", method=RequestMethod.POST)
     public ModelAndView replyupdate(@ModelAttribute QnAReply vo,  @RequestParam int bnum, @RequestParam int rnum, @RequestParam String replytext) throws Exception{
     	ModelAndView mav = new ModelAndView();
@@ -101,7 +101,7 @@ public class QnAReplyController {
     	return mav; 	
     }
 
-    //�ڸ�Ʈ �ۼ�â���� �̵�     
+    //코멘트 작성창으로 이동     
     @RequestMapping(value="/commentwrite/{rnum}", method=RequestMethod.GET)
     public ModelAndView commentwrite(@PathVariable("rnum") Integer rnum, ModelAndView mav){
         QnAReply vo = qnareplyService.detail(rnum);
@@ -113,7 +113,7 @@ public class QnAReplyController {
         return mav;
     }    
     
-    //�ڸ�Ʈ �ۼ�
+    //코멘트 작성
     @RequestMapping(value="comment")
     public ModelAndView replycomment(@ModelAttribute QnAReply vo, HttpSession session, @RequestParam int bnum, 
     		@RequestParam String replytext, @RequestParam int regroup, @RequestParam int restep, @RequestParam int reindent){

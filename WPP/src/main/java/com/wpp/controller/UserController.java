@@ -51,27 +51,27 @@ import com.wpp.service.UserService;
 @RequestMapping("/users")
 public class UserController {
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
-	//������ �̹��� ���ε� ���(applicationcontext.xml�� ��� ����)
+	//프로필 이미지 업로드 경로(applicationcontext.xml에 경로 있음)
 	@Resource(name="uploadPath2")
 	String uploadPath2;
 
 	@Autowired
 	UserService userService;
-	//��ť��Ƽ ��ȣȭ ���� 
+	//시큐리티 암호화 관련 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	//���� ����
+	//메일 관련
 	@Autowired
 	private JavaMailSender mailSender;
 	
-	//ȸ������
+	//회원가입
 	@RequestMapping("/form")
 	public String createform(Model model){
 		model.addAttribute("user", new User());
 		return "users/form";
 	}
 	
-	//ȸ�� ����
+	//회원 생성
 	@RequestMapping(value="/create" , method=RequestMethod.POST)
 	public String create(@Valid User user, BindingResult bindingResult){
 		log.debug("User : {}", user);
@@ -90,11 +90,11 @@ public class UserController {
 	}
 	
 	
-	//������- �������� ���̵� �����ͼ� ���� �ҷ����� 
+	//내정보- 세션으로 아이디 가져와서 정보 불러오기 
 	@RequestMapping("/myinfo")
 	public String myifo(Model model, HttpSession session){
 		if(session ==null){
-			throw new IllegalArgumentException("����� ���̵� �ʿ��մϴ�.");
+			throw new IllegalArgumentException("사용자 아이디가 필요합니다.");
 		}
 		
 		String userId = (String) session.getAttribute("userId");
@@ -103,11 +103,11 @@ public class UserController {
 		return "users/myinfo";
 	}
 	
-	//���� ����â���� �̵�
+	//정보 수정창으로 이동
 	@RequestMapping("/myinfo/infomodify")
 	public String infomodify(Model model, HttpSession session){
 		if(session ==null){
-			throw new IllegalArgumentException("����� ���̵� �ʿ��մϴ�.");
+			throw new IllegalArgumentException("사용자 아이디가 필요합니다.");
 		}
 		
 		String userId = (String) session.getAttribute("userId");
@@ -116,11 +116,11 @@ public class UserController {
 		return "users/infomodify";
 	}
 		
-	//���� ����
+	//정보 수정
 	@RequestMapping("/modify")
 	public String modify(Model model, HttpSession session,User user){
 		if(session ==null){
-			throw new IllegalArgumentException("����� ���̵� �ʿ��մϴ�.");
+			throw new IllegalArgumentException("사용자 아이디가 필요합니다.");
 		}
 		
 		String userId = (String) session.getAttribute("userId");
@@ -129,29 +129,29 @@ public class UserController {
 		return "users/myinfo";
 	}
 	
-	//�α׾ƿ�
+	//로그아웃
 	@RequestMapping("/logout")		  
   	public String logout(HttpSession session){		  	 		
  		session.invalidate();		 		
  		return "redirect:/";		 	
  	}
 	
-	//������ ����
+	//프로필 변경
 		@RequestMapping(value="imgmodify", method=RequestMethod.POST)
 		public ModelAndView imgmodify(@ModelAttribute User vo, HttpSession session, MultipartFile file, ModelAndView mav) throws Exception{
 			String userId = (String) session.getAttribute("userId");
-		    //���ε� ���� �̸��ߺ� ���� 
+		    //업로드 파일 이름중복 방지 
 		    UUID uuid = UUID.randomUUID();	    
 	        String savedName = uuid.toString()+"_"+file.getOriginalFilename();
 	        File target = new File(uploadPath2, savedName);
 	        
-	        // �ӽõ��丮�� ����� ���ε�� ������ ������ ���丮�� ����
-	        // FileCopyUtils.copy(����Ʈ�迭, ���ϰ�ü)
+	        // 임시디렉토리에 저장된 업로드된 파일을 지정된 디렉토리로 복사
+	        // FileCopyUtils.copy(바이트배열, 파일객체)
 	        FileCopyUtils.copy(file.getBytes(), target);
 
 	   
 	        mav.addObject("savedName", savedName);
-	        //vo�� ������ �ֱ�
+	        //vo에 데이터 넣기
 	        
 	        vo.setProfileimg(savedName);
 	        vo.setUserId(userId);
@@ -163,14 +163,14 @@ public class UserController {
 
 		}
 	
-	//���̵� �ߺ�üũ 
+	//아이디 중복체크 
 	 @RequestMapping(value = "/checkId.do")
 	 public void checkId(HttpServletRequest req, HttpServletResponse res,
 	   ModelMap model) throws Exception {
 	  PrintWriter out = res.getWriter();
 	  try {
 
-	   // �Ѿ�� ID�� �޴´�.
+	   // 넘어온 ID를 받는다.
 	   String paramId = (req.getParameter("prmId") == null) ? "" : String.valueOf(req.getParameter("prmId"));
 
 	   User vo = new User();
@@ -187,8 +187,8 @@ public class UserController {
 	 }
 	 
 	 
-//security�α���	 
-	//����������?? 
+//security로그인	 
+	//실패했을때?? 
 	@RequestMapping(value = "/signin", method = RequestMethod.GET)
 	public ModelAndView signin(@RequestParam(value = "error", required = false) String error, Model model) {
 		//model.addAttribute("error", error);
@@ -200,14 +200,14 @@ public class UserController {
 		return mav;
 	}
 
-	//���������� 
+	//성공했을때 
 	@PreAuthorize("authenticated")
 	@RequestMapping(value = "/mypage", method = RequestMethod.GET)
 	public String mypage(Model model,HttpSession session) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 			
-		//���� ������ �����ͼ� ���ǿ� �����ϱ� 
+		//유저 프로필 가져와서 세션에 적용하기 
 		String userId = auth.getName(); 
 		String userimg = userService.findprofile(userId);	
 		session.setAttribute("userimg", userimg);
@@ -215,17 +215,17 @@ public class UserController {
 		return "redirect:/";
 		}
 	 
-	 //idpwã��â���� �̵�
+	 //idpw찾기창으로 이동
 	 @RequestMapping("/idpwfind")
 	public String idfind(){
 		return "/users/findidpw";
 	}
 	 	
-	//���̵� ã��
+	//아이디 찾기
 	@RequestMapping("/findid")
 	public ModelAndView findid(@RequestParam String user_email, @RequestParam String user_name){
 		try{
-		//idã��� **~~���·� �ֱ� ����
+		//id찾기시 **~~형태로 주기 위해
 		String userId = userService.finduserId(user_email, user_name);
 		
 		String Id1 = userId.substring(0,2);
@@ -245,14 +245,14 @@ public class UserController {
 		}
 	}
 		
-		//��й�ȣ ã��  
+		//비밀번호 찾기  
 		@RequestMapping("/findpw")
 		public ModelAndView findpw(@RequestParam String user_email,@RequestParam String user_id ){
 			try{			
 			User user = new User();
 			user = userService.findByID(user_id);
 			
-			//�Է��� ���̵� ��ϵ� �̸��ϰ�  �Է��� �̸����� ���� ������ ����!
+			//입력한 아이디에 등록된 이메일과  입력한 이메일이 맞지 않으면 오류!
 			String useremail = userService.finduseremail(user_id); 
 			if(!useremail.equals(user_email)){
 				ModelAndView mav = new ModelAndView();
@@ -261,28 +261,28 @@ public class UserController {
 			}
 			
 			Random rd = new Random();
-	 		int num = rd.nextInt(10000)+1000; //���� ���� ���� ���ϱ� (10)�� 0~9�ϱ�... 10000�̸� 0~9999 ���⿡ õ�������ָ� 1000~10999(
-			String pw = "cot"+Integer.toString(num) +"cot"; //�ʱ�ȭ�� ��й�ȣ ���� cot ���� cot 
+	 		int num = rd.nextInt(10000)+1000; //랜덤 숫자 범위 정하기 (10)이 0~9니깐... 10000이면 0~9999 여기에 천을더해주면 1000~10999(
+			String pw = "cot"+Integer.toString(num) +"cot"; //초기화된 비밀번호 형태 cot 숫자 cot 
 			
 			String password = pw; 
 			
-			//��� ��ȣ �ʱ�ȭ 
+			//비밀 번호 초기화 
 			user.setPassword(password);
 			userService.update(user);
 			
-			//�̸��� ������ 
-			String setfrom = "Cot.com";         //������ �̸��� �̸�?
-			String tomail  = user_email;     // �޴� ��� �̸���
-			String title   = "Cot ��й�ȣ ã��";      // ����
-			String content = "��й�ȣ�� ������ ���� �ʱ�ȭ�˴ϴ�.\n"+"��й�ȣ��"+password+"�Դϴ�.";
+			//이메일 보내기 
+			String setfrom = "Cot.com";         //보내는 이메일 이름?
+			String tomail  = user_email;     // 받는 사람 이메일
+			String title   = "Cot 비밀번호 찾기";      // 제목
+			String content = "비밀번호는 다음과 같이 초기화됩니다.\n"+"비밀번호는"+password+"입니다.";
 			
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper messageHelper  = new MimeMessageHelper(message, true, "UTF-8");
 			 
-			messageHelper.setFrom(setfrom);  // �����»�� �����ϰų� �ϸ� �����۵��� ����
-			messageHelper.setTo(tomail);     // �޴»�� �̸���
-			messageHelper.setSubject(title); // ���������� ������ �����ϴ�
-			messageHelper.setText(content);  // ���� ����
+			messageHelper.setFrom(setfrom);  // 보내는사람 생략하거나 하면 정상작동을 안함
+			messageHelper.setTo(tomail);     // 받는사람 이메일
+			messageHelper.setSubject(title); // 메일제목은 생략이 가능하다
+			messageHelper.setText(content);  // 메일 내용
 			     
 			mailSender.send(message);
 	
@@ -297,13 +297,13 @@ public class UserController {
 			}
 		}
 		
-		//�޽��� �� ����
+		//메시지 폼 띄우기
 		@RequestMapping(value = "/formmessage", method = RequestMethod.GET)
 		public ModelAndView formmessage(@RequestParam String writer,  HttpSession session) throws UnsupportedEncodingException {
-			//������ ���
+			//보내는 사람
 			String senduser = (String)session.getAttribute("userId");
-			//�޴� ��� 
-			writer  = new String(writer.getBytes("8859_1"),"UTF-8"); //get��Ŀ��� �ѱ��� ������ �����Ƿ�  �ٲ��ֱ�!
+			//받는 사람 
+			writer  = new String(writer.getBytes("8859_1"),"UTF-8"); //get방식에서 한글을 넣으면 깨지므로  바꿔주기!
 			String receiver = writer;
 				
 			
@@ -316,7 +316,7 @@ public class UserController {
 			return mav;
 		}
 	
-		//�޼��� ������ 	
+		//메세지 보내기 	
 		@RequestMapping(value = "/sendmessage", method = RequestMethod.POST)
 		public ModelAndView usermessage(@RequestParam String senduser, @RequestParam String content,@RequestParam String receiver,  HttpSession session) {
 			
@@ -332,7 +332,7 @@ public class UserController {
 			return mav;
 		}
 		
-		//�޼������� 
+		//메세지보기 
 		@RequestMapping(value = "/message", method = RequestMethod.GET)
 		public ModelAndView viewmessage(HttpSession session) {
 			
@@ -345,7 +345,7 @@ public class UserController {
 			return mav;
 		}
 		
-		//�����޼������� 
+		//보낸메세지보기 
 		@RequestMapping(value = "/viewsendmessage", method = RequestMethod.GET)
 		public ModelAndView viewsendmessage(HttpSession session) {
 			
@@ -360,7 +360,7 @@ public class UserController {
 
 		
 		
-		//Ż��â �̵�
+		//탈퇴창 이동
 		@RequestMapping(value = "/unregisterform")
 		public ModelAndView unregisterform(HttpSession session) {
 					
@@ -370,14 +370,14 @@ public class UserController {
 		}
 		
 		
-		//ȸ�� Ż��
+		//회원 탈퇴
 		@RequestMapping(value = "/unregister", method = RequestMethod.POST)
 		public ModelAndView userunregister(HttpSession session, @RequestParam String user_password) {
 			String userid = (String)session.getAttribute("userId");
 			User user = new User();
 			
 			user = userService.findByID(userid);
-			//��й�ȣ �� �� Ż��
+			//비밀번호 비교 후 탈퇴
 			if(passwordEncoder.matches(user_password ,user.getPassword())){
 				userService.unregister(userid);
 				
@@ -396,5 +396,3 @@ public class UserController {
 		
 		
 }
-
-
