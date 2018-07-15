@@ -9,7 +9,7 @@
 	http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
 	http://www.springframework.org/schema/context 
 	http://www.springframework.org/schema/context/spring-context-4.0.xsd">
-	<!-- 경로 설정 다시 -->
+
 	<context:property-placeholder location="/WEB-INF/spring/application-properties.xml"/>
 	
 	<context:annotation-config />

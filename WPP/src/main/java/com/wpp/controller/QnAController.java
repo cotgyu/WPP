@@ -34,7 +34,7 @@ public class QnAController {
 	@Autowired
 	private UserService userService;
 	
-	//�Խ��� ����Ʈ
+	//게시판 리스트
 	@RequestMapping("/list")
 	public ModelAndView list(@RequestParam(defaultValue="title") String searchOption, 
 			@RequestParam(defaultValue="") String keyword,
@@ -65,23 +65,23 @@ public class QnAController {
         return mav; 
 	}
 	
-	//�Խù� �ۼ�ȭ�� �̵�
+	//게시물 작성화면 이동
 	@RequestMapping(value="write", method=RequestMethod.GET)
     public String write(){
         return "qna/write"; 
     }
 	
-	//�Խù� �ۼ�
+	//게시물 작성
 	@RequestMapping(value="insert", method=RequestMethod.POST)
 	public ModelAndView insert(@ModelAttribute QnA vo, HttpSession session) throws Exception{
 		ModelAndView mav = new ModelAndView();  
 		String writer = (String) session.getAttribute("userId");
-		//����, �亯 ����
+		//질문, 답변 설정
 	    vo.setAnswer("q");
 	    vo.setWriter(writer);
 	    
 	    qnaService.create(vo);
-	    //�׷� ����..
+	    //그룹 설정..
 	    int bnum = vo.getBnum();
 	    vo.setBnum(bnum);
 	    qnaService.setgroup(vo);
@@ -90,7 +90,7 @@ public class QnAController {
 	    return mav;
 	}
 
-	//�Խù� ����
+	//게시물 보기
 	@RequestMapping(value="view", method=RequestMethod.GET)
     public ModelAndView view(@RequestParam int bnum, HttpSession session) throws Exception{
       
@@ -107,7 +107,7 @@ public class QnAController {
         return mav;
     }
 	
-	//�亯 �ۼ�ȭ�� �̵�
+	//답변 작성화면 이동
 	@RequestMapping(value="writeanswer/{bnum}", method=RequestMethod.GET)
     public ModelAndView writeanswer(@PathVariable("bnum") int bnum,ModelAndView mav){
 		
@@ -117,7 +117,7 @@ public class QnAController {
         return mav; 
     }
 		
-	//�� �亯
+	//글 답변
 	@RequestMapping(value="answer", method=RequestMethod.POST)
 	public String answer(@ModelAttribute QnA vo, HttpSession session, @RequestParam int bnum) throws Exception{
 	  
@@ -130,7 +130,7 @@ public class QnAController {
 	    return "redirect:list";
 	}
  
-	//�� ����â���� ����     
+	//글 수정창으로 연결     
     @RequestMapping(value="/updatedetail/{bnum}", method=RequestMethod.GET)
     public ModelAndView boardDetail(@PathVariable("bnum") Integer bnum, ModelAndView mav){
         QnA vo = qnaService.detail(bnum);
@@ -140,14 +140,14 @@ public class QnAController {
         return mav;
     }
     
-    //�Խñ� ����
+    //게시글 수정
     @RequestMapping(value="update", method=RequestMethod.POST)
     public String update(@ModelAttribute QnA vo) throws Exception{
     	qnaService.update(vo);
         return "redirect:list";
     }
    
-    // �Խñ� ����
+    // 게시글 삭제
     @RequestMapping("delete")
     public String delete(@RequestParam int bnum) throws Exception{
     	qnaService.delete(bnum);

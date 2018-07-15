@@ -26,16 +26,16 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
 	@Autowired
 	UserService userService;
-	//��ť��Ƽ ��ȣȭ salt���� ���������� �ڵ� �����ϴ� ������� �۵�...?
+	//시큐리티 암호화 salt값을 내부적으로 자동 생성하는 방식으로 작동...?
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	/* 
-	 �ٸ���� ��ȣȭ
+	 다른방식 암호화
 	@Autowired
 	private SaltSource saltSource;
 	 */
 	
-	//�α��� ����ó��(���̵� , ��й�ȣ Ȯ��)
+	//로그인 인증처리(아이디 , 비밀번호 확인)
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = authentication.getName();
@@ -46,19 +46,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		try {
 			user = userService.loadUserByUsername(username);
 			if(user ==null){
-				//���̵� ��ã���� �޽���
-				throw new BadCredentialsException("���̵� �����ϴ�.");
+				//아이디 못찾을때 메시지
+				throw new BadCredentialsException("아이디가 없습니다.");
 			}
-			//��ȣȭ�� �ٸ����??
+			//암호화의 다른방식??
 			//String hashedPassword = passwordEncoder.encodePassword(password, saltSource.getSalt(user));
 			String hashedPassword = password;
 			logger.info(
 					"username : " + username + " / password : " + password + " / hash password : " + hashedPassword);
 			logger.info("username : " + user.getUsername() + " / password : " + user.getPassword());
 			
-			//matchs�� ���ϱ�, ��й�ȣ Ʋ������ �޼���
+			//matchs로 비교하기, 비밀번호 틀렸을때 메세지
 			if (!passwordEncoder.matches(hashedPassword ,user.getPassword()))
-				throw new BadCredentialsException("��й�ȣ�� ��ġ���� �ʽ��ϴ�.");
+				throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 			authorities = user.getAuthorities();
 			
 		} catch (UsernameNotFoundException e) {

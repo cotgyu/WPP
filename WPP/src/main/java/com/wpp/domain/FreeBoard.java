@@ -3,15 +3,15 @@ package com.wpp.domain;
 import java.util.Date;
 
 public class FreeBoard {
-	private int bnum;		 //�۹�ȣ
-	private String title; 	//������
- 	private String content;	//�۳���
-	private String writer;	//�ۼ���
-	private Date date;		//�ۼ���¥
-	private int hit;		//��ȸ��
-	private int recnt; 		//��� ��
-	private String tag;		//�����Խ��� �±�
-	private String boardtag; //�ֽű� ������ ���� �� ���� 
+	private int bnum;		 //글번호
+	private String title; 	//글제목
+ 	private String content;	//글내용
+	private String writer;	//작성자
+	private Date date;		//작성날짜
+	private int hit;		//조회수
+	private int recnt; 		//댓글 수
+	private String tag;		//자유게시판 태그
+	private String boardtag; //최신글 구분을 위한 글 종류 
 	
 	public String getBoardtag() {
 		return boardtag;

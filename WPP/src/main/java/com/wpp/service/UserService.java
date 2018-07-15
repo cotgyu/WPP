@@ -28,11 +28,11 @@ public class UserService implements UserDetailsService{
 	private PasswordEncoder passwordEncoder;
 
 	public void create(User user) {
-		//ȸ�����Խ� ȸ���� �Է��� ��й�ȣ ��ȣȭ�Ͽ� db�� ���� 
+		//회원가입시 회원이 입력한 비밀번호 암호화하여 db에 저장 
 		String password = user.getPassword();
 		password = passwordEncoder.encode(password);
 		
-		//��ȣȭ�� ��й�ȣ�� ������ ����
+		//암호화된 비밀번호를 유저에 셋팅
 		user.setPassword(password);
 		
 		userDao.create(user);
@@ -63,12 +63,12 @@ public class UserService implements UserDetailsService{
 		return userDao.findprofile(userId);
 	}
 	
-	//��ť��Ƽ ���̵�Ȯ�� ��  �α��μ����� ó��,���� �ο� 
+	//시큐리티 아이디확인 및  로그인성공시 처리,권한 부여 
 	@Override
 	public User loadUserByUsername(String username) throws UsernameNotFoundException {		
 		User user = new User();
 		user = userDao.findname(username);
-		//���̵� ������....
+		//아이디가 없을때....
 		if(user ==null){
 			return user;
 		}
@@ -77,8 +77,8 @@ public class UserService implements UserDetailsService{
 		user.setPassword(user.getPassword());
 		Role role = new Role();
 		
-		//���̵� ���������� ���� �ο�.....�ʹ�����ѵ�...
-		if(username.equals("������")){
+		//아이디가 관리자일지 어드민 부여.....너무허술한듯...
+		if(username.equals("관리자")){
 			role.setName("ROLE_ADMIN");
 			List<Role> roles = new ArrayList<Role>();
 			roles.add(role);
@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService{
 		return user;
 	}
 	
-	//�̸��Ϸ� ���̵�ã�� 
+	//이메일로 아이디찾기 
 	public String finduserId(String user_email, String user_name) {
 		return userDao.finduserId(user_email,user_name);
 	}
@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService{
 		return userDao.finduseremail(userid);
 	}
 	
-	//�޼��� �κ� 
+	//메세지 부분 
 	public void sendmessage(Message message) {
 		userDao.sendmessage(message);
 	}

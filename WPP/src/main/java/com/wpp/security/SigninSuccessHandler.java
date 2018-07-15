@@ -27,7 +27,7 @@ public class SigninSuccessHandler extends SavedRequestAwareAuthenticationSuccess
 			response.setContentType("application/xml");
 			response.setCharacterEncoding("utf-8");
 			String data = StringUtils.join(new String[] { "<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "<response>",
-					"<error>false</error>", "<message>�α����Ͽ����ϴ�.</message>", "</response>" });
+					"<error>false</error>", "<message>로그인하였습니다.</message>", "</response>" });
 			PrintWriter out = response.getWriter();
 			out.print(data);
 			out.flush();
@@ -36,7 +36,7 @@ public class SigninSuccessHandler extends SavedRequestAwareAuthenticationSuccess
 			response.setContentType("application/json");
 			response.setCharacterEncoding("utf-8");
 			String data = StringUtils.join(new String[] { " { \"response\" : {", " \"error\" : false , ",
-					" \"message\" : \"�α����Ͽ����ϴ�.\" ", "} } " });
+					" \"message\" : \"로그인하였습니다.\" ", "} } " });
 			PrintWriter out = response.getWriter();
 			out.print(data);
 			out.flush();
