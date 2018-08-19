@@ -12,11 +12,11 @@
 <%@ include file="../commons/_header.jspf" %>
 <script>
     // **원하는 페이지로 이동시 검색조건, 키워드 값을 유지하기 위해 
-    function list(page){
-        location.href="${path}/admin/list?curPage="+page+"&searchOption-${map.searchOption}"+"&keyword=${map.keyword}";
+    function adminuserlist(page){
+        location.href="/admin/userlist?curPage="+page+"&searchOption=${map.searchOption}"+"&keyword=${map.keyword}";
     }
 
-    function search(){
+    function adminusersearch(){
 		document.formId.method = "post"     
         document.formId.submit();
 		}
@@ -40,7 +40,7 @@
 				
 				<!-- 검색부분 -->
 				<div class="searchMenu5">
-					 <form name="form1" method="post" action="${path}/admin/list">
+					 <form name="form1" method="post" action="${path}/admin/userlist">
 				        <select name="searchOption">
 				            <!-- 검색조건을 검색처리후 결과화면에 보여주기위해  c:out 출력태그 사용, 삼항연산자 -->
 				            <option value="all" <c:out value="${map.searchOption == 'all'?'selected':''}"/> >이름+아이디</option>
@@ -50,7 +50,7 @@
 				           
 				        </select>
 				        <input name="keyword" value="${map.keyword}">
-				        <input type="image" src="\resources\images\search2.png" onClick="javascript_:search();" width="40" height="18" >
+				        <input type="image" src="\resources\images\search2.png" onClick="javascript_:adminusersearch();" width="40" height="18" >
 				    </form>
 				    
 				     ${map.countuser}명이 있습니다. 
@@ -87,12 +87,12 @@
             	<td colspan="6">
             	<!-- 처음 페이지로-->
                 <c:if test="${map.boardPage.curPage > 1}">
-                    <a href="javascript:list('1')">[처음]</a>
+                    <a href="javascript:adminuserlist('1')">[처음]</a>
                 </c:if>
                 
 	            <!-- 이전 블록으로 이동  -->
 	            <c:if test="${map.boardPage.curBlock > 1}">
-	                <a href="javascript:list('${map.boardPage.prevPage}')">[이전]...</a>
+	                <a href="javascript:adminuserlist('${map.boardPage.prevPage}')">[이전]...</a>
 	            </c:if>	
             	
             	<!-- 페이지 표시 -->
@@ -103,19 +103,19 @@
                             <span style="color: red">${num}</span>&nbsp;
                         </c:when>
                         <c:otherwise>
-                            <a href="javascript:list('${num}')">${num}</a>&nbsp;
+                            <a href="javascript:adminuserlist('${num}')">${num}</a>&nbsp;
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
                 
                 <!-- 다음 블록으로 이동  -->
 	            <c:if test="${map.boardPage.curBlock < map.boardPage.totBlock}">
-	                <a href="javascript:list('${map.boardPage.nextPage}')">...[다음]</a>
+	                <a href="javascript:adminuserlist('${map.boardPage.nextPage}')">...[다음]</a>
 	            </c:if> 
                          
                 <!-- 마지막 페이지 이동-->
                 <c:if test="${map.boardPage.curPage <= map.boardPage.totPage}">
-                    <a href="javascript:list('${map.boardPage.totPage}')">[끝]</a>
+                    <a href="javascript:adminuserlist('${map.boardPage.totPage}')">[끝]</a>
                 </c:if>
             </td>
         </tr>
