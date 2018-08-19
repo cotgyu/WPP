@@ -51,9 +51,10 @@ function openMessage(writer){
             <div style= "margin-left: <c:out value="${30*row.reindent}"/>px; border:1px solid; background-color:white">             
         	  	<input type="image" src="\resources\images\re.png" width="40" height="18" >
                 <c:if test="${not empty sessionScope.userId}">
-                <c:if test="${sessionScope.userId ne row.replyer  }">		
-				<a href="#" onClick="javascript_:openMessage('${row.replyer}');" style="color:black;">
-				</c:if></c:if>
+                	<c:if test="${sessionScope.userId ne row.replyer  }">		
+						<a href="#" onClick="javascript_:openMessage('${row.replyer}');" style="color:black;">
+					</c:if>
+				</c:if>
                 ${row.replyer} 
                 </a>
                 &emsp;<fmt:formatDate value="${row.date}" pattern="yyyy-MM-dd a HH:mm" />
