@@ -42,12 +42,15 @@ public class WebBoardController {
 	WebBoardService webboardService;
 	@Autowired
 	UserService userService;
+	private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 	
 	//게시판 리스트
 	@RequestMapping("/list")
 	public ModelAndView list(@RequestParam(defaultValue="title") String searchOption, @RequestParam(defaultValue="") String keyword,
 			@RequestParam(defaultValue="1") int curPage) throws Exception{
 
+		LOG.debug("-------------------WebBoardList_Start--------------------");		
+		
 		int count = webboardService.countboard(searchOption, keyword);
 	
 		BoardPage boardPage = new BoardPage(count, curPage);
@@ -69,7 +72,7 @@ public class WebBoardController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("map", map); 
         mav.setViewName("webboard/webboard"); 
-       
+        LOG.debug("-------------------WebBoardList_End--------------------");		
         return mav; 
 	}
 	

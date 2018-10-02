@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,9 +40,12 @@ public class HomeController {
 	@Autowired
 	private UserDao userDao;
 
+	private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 	//메인화면
 	@RequestMapping("/")
 	public ModelAndView Home(HttpSession session) throws Exception{
+		LOG.debug("-------------------Home_Start--------------------");
+		
 		//인기게시판 가져오기
 		List<WebBoard> poplist = webboardDao.popboard();
 		List<FreeBoard> popFlist = freeboardDao.popboard();
@@ -62,7 +67,7 @@ public class HomeController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("map", map); 
         mav.setViewName("home"); 
-       
+        LOG.debug("-------------------Home_End--------------------");
         return mav; 
 	}
 	
