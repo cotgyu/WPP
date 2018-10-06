@@ -7,8 +7,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      
    
     <insert id="insertReply" parameterType="com.wpp.domain.QnAReply" useGeneratedKeys="true" keyProperty="rnum">
-        INSERT INTO qna_reply (rnum, bnum, replytext, replyer ,regroup, restep, reindent)
-        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 0,0)	
+        INSERT INTO qna_reply (rnum, bnum, replytext, replyer, regroup, restep, reindent)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 0, 0)	
     </insert>
    
     <update id="create_setgroup" parameterType="com.wpp.domain.QnAReply">
@@ -19,18 +19,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <!-- 댓글입력할때 그룹넘버 설정 ㅁㅇㅇㅈㅇ실패-->
     <update id="setreGroup" parameterType="com.wpp.domain.QnAReply" useGeneratedKeys="true">
-    	UPDATE qna_reply set regroup = last_insert_id() 	
+    	UPDATE qna_reply 
+    	SET regroup = last_insert_id() 	
     </update>
     
     <select id="listReply" resultType="com.wpp.domain.QnAReply">
-        SELECT rnum, bnum, replytext, replyer, date ,regroup, restep, reindent
+        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent
         FROM qna_reply
         WHERE bnum = #{bnum}
-        ORDER BY regroup asc, restep asc, reindent asc
+        ORDER BY regroup ASC, restep ASC, reindent ASC
     </select>
     
     <select id="replymodifyview" resultType="com.wpp.domain.QnAReply">
-        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent FROM qna_reply
+        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent \
+        FROM qna_reply
         WHERE rnum = #{rnum}
     </select>
     
@@ -46,13 +48,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
  
     <insert id="insertReplyComment">
-    	INSERT INTO qna_reply (rnum, bnum, replytext, replyer ,regroup, restep , reindent)
+    	INSERT INTO qna_reply (rnum, bnum, replytext, replyer ,regroup, restep, reindent)
         VALUES (0, #{bnum}, #{replytext}, #{replyer}, #{regroup} ,#{restep}+1 , #{reindent}+1) 
     </insert>
     
     <update id="replyStepShape">
     	UPDATE qna_reply
     	SET restep = restep + 1
-    	WHERE regroup = #{regroup} and restep > #{restep} 
+    	WHERE regroup = #{regroup} AND restep > #{restep} 
     </update>
 </mapper>

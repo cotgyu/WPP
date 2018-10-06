@@ -5,7 +5,8 @@
  <mapper namespace="QnAMapper">
  
  	<insert id="insert" parameterType="com.wpp.domain.QnA" useGeneratedKeys="true" keyProperty="bnum">
-        INSERT INTO qna (bnum, title, content, writer, answer, qgroup) VALUES (0,#{title},#{content},#{writer},#{answer},#{qgroup})
+        INSERT INTO qna (bnum, title, content, writer, answer, qgroup) 
+        VALUES (0, #{title}, #{content} ,#{writer} ,#{answer} ,#{qgroup})
     </insert>
     
 	<update id="setgroup" parameterType="com.wpp.domain.QnA">
@@ -15,19 +16,20 @@
     </update>
 
      <select id="view" resultType="com.wpp.domain.QnA">
-        SELECT * FROM qna 
+        SELECT * 
+        FROM qna 
         WHERE bnum = #{bnum}
     </select>
  
  	<update id="uphit">
-        UPDATE qna SET hit = hit + 1 
+        UPDATE qna 
+        SET hit = hit + 1 
         WHERE bnum = #{bnum}
     </update>
     
     <update id="updateArticle">
-        UPDATE qna SET
-            title = #{title},
-            content = #{content}
+        UPDATE qna 
+        SET title = #{title}, content = #{content}
         WHERE bnum = #{bnum}
     </update>
  
@@ -38,47 +40,50 @@
  	
  	<!-- 답변이 추가됫으므로 1차적으로 그룹으로 내림차순 정렬 후 , 답변이 밑으로 가게 하기위해 bnum 오름차순 -->
  	<select id="viewlist" resultType="com.wpp.domain.QnA">	
-	 	SELECT bnum, title, content, writer, date, hit, answer,
-        (SELECT COUNT(*) FROM qna_reply WHERE bnum= b.bnum) AS recnt
+	 	SELECT bnum, title, content, writer, date, hit, answer, (SELECT COUNT(*) FROM qna_reply WHERE bnum= b.bnum) AS recnt
 	 	FROM qna b
    		<include refid="search"></include>
-		ORDER BY qgroup desc, bnum asc ,date desc  LIMIT ${start}, 20;
+		ORDER BY qgroup DESC, bnum ASC ,date DESC LIMIT ${start}, 20;
 	</select>
 	
  	<select id="userlist" >	 
-	 	SELECT profileimg FROM users	 	
+	 	SELECT profileimg 
+	 	FROM users	 	
 	</select>
 
 	<select id="findByWriter" resultType="string">
- 		select writer from qna where bnum= #{bnum}
+ 		SELECT writer 
+ 		FROM qna 
+ 		WHERE bnum = #{bnum}
  	</select>
 	
 	<select id="countboard" resultType="int">
-		SELECT COUNT(*) FROM qna
+		SELECT COUNT(*) 
+		FROM qna
 		<include refid="search"></include>
 	</select>
 	
 	<select id="popboard" resultType="com.wpp.domain.QnA">
-		SELECT bnum, title, content, writer, date, hit,
-        (SELECT COUNT(*) FROM qna_reply WHERE bnum= b.bnum)AS recnt from qna b order by hit desc limit 5;
+		SELECT bnum, title, content, writer, date, hit, (SELECT COUNT(*) FROM qna_reply WHERE bnum= b.bnum)AS recnt 
+		FROM qna b 
+		ORDER BY hit DESC limit 5;
 	</select>
 	
 	<select id="modifyview" resultType="com.wpp.domain.QnA">
-        SELECT bnum, title, content, writer, date, hit FROM qna
+        SELECT bnum, title, content, writer, date, hit 
+        FROM qna
         WHERE bnum = #{bnum}
     </select>
 
 	<sql id="search">
-	    <choose>
-	     
+	    <choose> 
 	        <when test="searchOption == 'all'">
-	            WHERE writer like '%${keyword}%'
-	            OR content like '%${keyword}%'
-	            OR title like '%${keyword}%'
-	        </when>
-	    
+	            WHERE writer LIKE '%${keyword}%'
+	            OR content LIKE '%${keyword}%'
+	            OR title LIKE '%${keyword}%'
+	        </when>	    
 	        <otherwise>
-	            WHERE ${searchOption} like '%${keyword}%'
+	            WHERE ${searchOption} LIKE '%${keyword}%'
 	        </otherwise>
 	    </choose>
 	</sql>

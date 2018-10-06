@@ -8,7 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      
     <insert id="insertReply" parameterType="com.wpp.domain.WebReply" useGeneratedKeys="true" keyProperty="rnum">	
         INSERT INTO web_reply (rnum, bnum, replytext, replyer ,regroup, restep, reindent)
-        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 0,0)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, 0, 0, 0)
 		<selectKey keyProperty="rnum" resultType="int">
         SELECT LAST_INSERT_ID()
     	</selectKey>
@@ -24,11 +24,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT rnum, bnum, replytext, replyer, date ,regroup, restep, reindent
         FROM web_reply 
         WHERE bnum = #{bnum}
-        ORDER BY regroup asc, restep asc, reindent asc
+        ORDER BY regroup ASC, restep ASC, reindent ASC
     </select>
     
     <select id="replymodifyview" resultType="com.wpp.domain.WebReply">
-        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent FROM web_reply
+        SELECT rnum, bnum, replytext, replyer, date, regroup, restep, reindent 
+        FROM web_reply
         WHERE rnum = #{rnum}
     </select>
     
@@ -44,13 +45,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <insert id="insertReplyComment">
-    	INSERT INTO web_reply (rnum, bnum, replytext, replyer ,regroup, restep , reindent)
-        VALUES (0, #{bnum}, #{replytext}, #{replyer}, #{regroup} ,#{restep}+1 , #{reindent}+1) 
+    	INSERT INTO web_reply (rnum, bnum, replytext, replyer , regroup, restep, reindent)
+        VALUES (0, #{bnum}, #{replytext}, #{replyer}, #{regroup}, #{restep}+1, #{reindent}+1) 
     </insert>
     
     <update id="replyStepShape">
     	UPDATE web_reply
     	SET restep = restep +1
-    	WHERE regroup = #{regroup} and  restep > #{restep} 
+    	WHERE regroup = #{regroup} AND restep > #{restep} 
     </update>
 </mapper>

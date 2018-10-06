@@ -9,7 +9,7 @@
 	 	SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter
 	 	FROM gallery 
    		<include refid="search2"></include> 
-		ORDER BY imgid desc, imgdate desc LIMIT ${start}, 20;	
+		ORDER BY imgid desc, imgdate DESC LIMIT ${start}, 20;	
 	</select>
 	
 	<!-- 추천순 정렬 -->
@@ -17,19 +17,21 @@
 	 	SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter
 	 	FROM gallery
 		<include refid="search2"></include> 
-		ORDER BY imgup desc LIMIT ${start}, 20; 	
+		ORDER BY imgup DESC LIMIT ${start}, 20; 	
 	</select>
 	
 	<!-- 이미지 등록 -->
  	<insert id="insertimage">
- 		INSERT INTO gallery(imgid, imgname, imgfile, imgup ,imgwriter) values (#{imgid},#{imgname},#{imgfile},0,#{imgwriter}) 
+ 		INSERT INTO gallery(imgid, imgname, imgfile, imgup ,imgwriter) 
+ 		VALUES (#{imgid},#{imgname},#{imgfile},0,#{imgwriter}) 
  	</insert>
  
     
  	<!-- 이미지  추천 -->
  	<update id="upimage">
- 		UPDATE gallery set imgup = imgup +1 
- 		where imgid= #{#imgid}
+ 		UPDATE gallery 
+ 		SET imgup = imgup +1 
+ 		WHERE imgid= #{#imgid}
  	</update>
  
    	<!-- 이미지 삭제 -->
@@ -41,12 +43,14 @@
 	<!-- 메인화면에 표시될 인기 갤러리 -->
 	<select id="popimglist" resultType="com.wpp.domain.Gallery">
 		SELECT imgid, imgname, imgfile, imgdate, imgup, imgwriter	 	
-	 	from gallery order by imgup desc limit 4;
+	 	FROM gallery 
+	 	ORDER BY imgup DESC LIMIT 4;
 	</select>
 	
 	<!-- 갤러리 수 카운트  -->
 	<select id="countboard" resultType="int">
-		SELECT COUNT(*) FROM gallery
+		SELECT COUNT(*) 
+		FROM gallery
 		<!-- where절을 include 태그로 삽입 -->
 		<include refid="search2"></include>
 	</select>
@@ -56,12 +60,12 @@
     	<choose>
         	<!-- 검색옵션이 전체 검색일 경우 -->
         	<when test="searchOption == 'all'">
-            	WHERE imgwriter like '%${keyword}%'
-            	OR imgname like '%${keyword}%'
+            	WHERE imgwriter LIKE '%${keyword}%'
+            	OR imgname LIKE '%${keyword}%'
         	</when>
         	<!-- 전체 검색이 아닐 경우 -->
         	<otherwise>
-            	WHERE ${searchOption} like '%${keyword}%'
+            	WHERE ${searchOption} LIKE '%${keyword}%'
         	</otherwise>
     	</choose>
 	</sql>

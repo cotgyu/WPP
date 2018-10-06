@@ -6,24 +6,28 @@
  	
  	<!-- 게시물 생성 -->
  	<insert id="insert">
-        INSERT INTO free_board ( bnum, title, content, writer,tag) VALUES (#{bnum},#{title},#{content},#{writer},#{tag})
+        INSERT INTO free_board ( bnum, title, content, writer,tag) 
+        VALUES (#{bnum},#{title},#{content},#{writer},#{tag})
     </insert>
     
     <!-- 특정 게시물 보기 -->
      <select id="view" resultType="com.wpp.domain.FreeBoard">
-        SELECT * FROM free_board 
+        SELECT * 
+        FROM free_board 
         WHERE bnum = #{bnum}
     </select>
  
  	<!-- 조회수 늘리기 -->
  	<update id="uphit">
-        UPDATE free_board SET hit = hit + 1 
+        UPDATE free_board 
+        SET hit = hit + 1 
         WHERE bnum = #{bnum}
     </update>
     
     <!-- 게시물 수정 -->
     <update id="updateArticle">
-        UPDATE free_board SET
+        UPDATE free_board 
+        SET
             title = #{title},
             content = #{content},
             tag=#{tag}
@@ -32,24 +36,26 @@
     
     <!-- 게시글 삭제 -->
     <delete id="delete">
-        DELETE FROM free_board
+        DELETE 
+        FROM free_board
         WHERE bnum = #{bnum}
     </delete>
  	
  	<!-- 게시물 리스트 -->
  	<select id="viewlist" resultType="com.wpp.domain.FreeBoard">	
 	 	SELECT bnum, title, content, writer, date, hit,tag,
-	 	<!-- ** 댓글숫자표시 -->
-        (SELECT COUNT(*) FROM free_reply WHERE bnum= b.bnum) AS recnt
+		 	<!-- ** 댓글숫자표시 -->
+	        (SELECT COUNT(*) FROM free_reply WHERE bnum= b.bnum) AS recnt
 	 	FROM free_board b
 		<!-- WHERE절을 include 태그로 삽입 -->
    		<include refid="search"></include>
-		ORDER BY bnum desc, date desc LIMIT ${start}, 20;	 	
+		ORDER BY bnum DESC, date DESC LIMIT ${start}, 20;	 	
 	</select>
 	
 	<!-- 게시물 수 카운트 -->
 	<select id="countboard" resultType="int">
-		SELECT COUNT(*) FROM free_board
+		SELECT COUNT(*) 
+		FROM free_board
 		<!-- where절을 include 태그로 삽입 -->
 		<include refid="search"></include>
 	</select>
@@ -58,19 +64,24 @@
 	<select id="popboard" resultType="com.wpp.domain.FreeBoard">
 		SELECT bnum, title, content, writer, date, hit,
 	 	<!-- ** 댓글숫자표시 -->
-        (SELECT COUNT(*) FROM free_reply WHERE bnum= f.bnum) AS recnt from free_board f order by hit desc limit 5;
+        (SELECT COUNT(*) FROM free_reply WHERE bnum= f.bnum) AS recnt 
+        FROM free_board f 
+        ORDER BY hit DESC limit 5;
 	</select>
 	
 	<!-- 수정하기 전 불러오기  -->
 	<select id="detail" resultType="com.wpp.domain.FreeBoard">
-        SELECT bnum, title, content, writer, date, hit , tag FROM free_board
+        SELECT bnum, title, content, writer, date, hit , tag 
+        FROM free_board
         WHERE bnum = #{bnum}
     </select>
     
     
     <!-- 게시물 번호에 맞는 작성자 찾기(프로필사진 찾기위해서 작성자 찾음)  -->
 	<select id="findByWriter" resultType="string">
- 		select writer from  free_board where bnum= #{bnum}
+ 		SELECT writer 
+ 		FROM free_board 
+ 		WHERE bnum= #{bnum}
  	</select>
  	
 <!-- 검색 부분 -->
@@ -78,13 +89,13 @@
     <choose>
         <!-- 검색옵션이 전체 검색일 경우 -->
         <when test="searchOption == 'all'">
-            WHERE writer like '%${keyword}%'
-            OR content like '%${keyword}%'
-            OR title like '%${keyword}%'
+            WHERE writer LIKE '%${keyword}%'
+            OR content LIKE '%${keyword}%'
+            OR title LIKE '%${keyword}%'
         </when>
         <!-- 전체 검색이 아닐 경우 -->
         <otherwise>
-            WHERE ${searchOption} like '%${keyword}%'
+            WHERE ${searchOption} LIKE '%${keyword}%'
         </otherwise>
     </choose>
 </sql>

@@ -6,88 +6,87 @@
  
   	<!--  게시물 리스트 -->
  	<select id="viewlist" resultType="com.wpp.domain.FreeBoard">	
- 		SELECT bnum, title, writer, date ,boardtag from (
- 		(SELECT bnum,title,writer,date,boardtag from web_board )
-		UNION
-		(SELECT bnum as bnum, title as title, writer as writer, date as date, boardtag as boardtag from free_board)
-		UNION
-		(SELECT bnum as bnum, title as title, writer as writer, date as date, boardtag as boardtag from qna)
-		UNION
-		(SELECT bnum as bnum, title as title, writer as writer, date as date, boardtag as boardtag from notice)
-		UNION
-		(SELECT imgid as bnum, imgname as title, imgwriter as writer ,imgdate as date, boardtag as boardtag from gallery)
-		)g
+ 		SELECT bnum, title, writer, date, boardtag 
+ 		FROM (
+		 		(SELECT bnum, title, writer, date, boardtag FROM web_board )
+				UNION
+				(SELECT bnum AS bnum, title AS title, writer AS writer, date AS date, boardtag AS boardtag FROM free_board)
+				UNION
+				(SELECT bnum AS bnum, title AS title, writer AS writer, date AS date, boardtag AS boardtag FROM qna)
+				UNION
+				(SELECT bnum AS bnum, title AS title, writer AS writer, date AS date, boardtag AS boardtag FROM notice)
+				UNION
+				(SELECT imgid AS bnum, imgname AS title, imgwriter AS writer ,imgdate AS date, boardtag AS boardtag FROM gallery)
+			 )g
 		
    		<include refid="search"></include>		
-		ORDER BY date desc LIMIT ${start}, 20;
+		ORDER BY date DESC LIMIT ${start}, 20;
 	</select>
 	
 	<!-- 게시물 수 카운트 -->
 	<select id="countboard" resultType="int">
-			select sum(num) from(
-		
-		(SELECT count(bnum)  as num from web_board )
-		UNION
-		(SELECT count(bnum)  as num from free_board)
-		UNION
-		(SELECT count(bnum)  as num from qna)
-		UNION
-		(SELECT count(bnum)  as num from notice)
-		UNION
-		(SELECT count(imgid)  as num from gallery)
-        
-        )a
+		SELECT SUM(num) 
+		FROM(
+				(SELECT COUNT(bnum)  AS num FROM web_board )
+				UNION
+				(SELECT COUNT(bnum)  AS num FROM free_board)
+				UNION
+				(SELECT COUNT(bnum)  AS num FROM qna)
+				UNION
+				(SELECT COUNT(bnum)  AS num FROM notice)
+				UNION
+				(SELECT COUNT(imgid)  AS num FROM gallery)      
+	        )a
 		<!-- 총합계를 내는 방식이라 일반 게시판과 같은 방식으로 검색 옵션을 적용할 수 없음...
 		<include refid="search"></include>-->
 	</select>
 	
 	<!--  댓글 리스트 -->
  	<select id="viewreplylist" resultType="com.wpp.domain.WebReply">
- 		SELECT rnum, bnum, replyer, replytext ,date, replytag from (	
- 		(SELECT rnum,bnum,replyer,replytext ,date, replytag from web_reply )
-		UNION
-		(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext ,date as date, replytag as replytag from free_reply)
-		UNION
-		(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext , date as date, replytag as replytag from qna_reply)
-		UNION
-		(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext , date as date, replytag as replytag from notice_reply)
- 		)b
+ 		SELECT rnum, bnum, replyer, replytext ,date, replytag 
+ 		FROM (	
+		 		(SELECT rnum,bnum,replyer,replytext ,date, replytag from web_reply )
+				UNION
+				(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext ,date as date, replytag as replytag from free_reply)
+				UNION
+				(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext , date as date, replytag as replytag from qna_reply)
+				UNION
+				(SELECT rnum as rnum, bnum as bnum ,replyer as replyer,replytext as replytext , date as date, replytag as replytag from notice_reply)
+		 	 )b
    		<include refid="replysearch"></include>
   
-		ORDER BY date desc LIMIT ${start}, 20;	 	
+		ORDER BY date DESC LIMIT ${start}, 20;	 	
 	</select>
 	
 	<!-- 댓글 수 카운트 -->
 	<select id="countreply" resultType="int">
-			select sum(snum) from(
-		
-		(SELECT count(rnum)  as snum from web_reply )
-		UNION
-		(SELECT count(rnum)  as snum from free_reply)
-		UNION
-		(SELECT count(rnum)  as snum from qna_reply)
-		UNION
-		(SELECT count(rnum)  as snum from notice_reply)
-        )r
-
+		SELECT SUM(snum) 
+		FROM(
+				(SELECT count(rnum)  as snum from web_reply )
+				UNION
+				(SELECT count(rnum)  as snum from free_reply)
+				UNION
+				(SELECT count(rnum)  as snum from qna_reply)
+				UNION
+				(SELECT count(rnum)  as snum from notice_reply)
+        	)r
 		<!-- 
 		<include refid="search"></include>-->
 	</select>
 	
 		<!--  유저 리스트 -->
  	<select id="viewuserlist" resultType="com.wpp.domain.User">
- 		SELECT * from users
+ 		SELECT * 
+ 		FROM users
    		<include refid="usersearch"></include>
-  
-		ORDER BY joindate desc LIMIT ${start}, 20;	 	
+		ORDER BY joindate DESC LIMIT ${start}, 20;	 	
 	</select>
 	
 	<!-- 유저 수 카운트 -->
 	<select id="countuser" resultType="int">
-			select count(*) from users
-
-		
-		<include refid="usersearch"></include>
+			SELECT COUNT(*) 
+			FROM users
+			<include refid="usersearch"></include>
 	</select>
 	
 	
@@ -96,12 +95,12 @@
     <choose>
         <!-- 검색옵션이 전체 검색일 경우 -->
         <when test="searchOption == 'all'">
-            WHERE writer like '%${keyword}%'
-            OR title like '%${keyword}%'
+            WHERE writer LIKE '%${keyword}%'
+            OR title LIKE '%${keyword}%'
         </when>
         <!-- 전체 검색이 아닐 경우 -->
         <otherwise>
-            WHERE ${searchOption} like '%${keyword}%'
+            WHERE ${searchOption} LIKE '%${keyword}%'
         </otherwise>
     </choose>
 </sql>
@@ -110,12 +109,12 @@
     <choose>
         <!-- 검색옵션이 전체 검색일 경우 -->
         <when test="searchOption == 'all'">
-            WHERE replyer like '%${keyword}%'
-            OR replytext like '%${keyword}%'
+            WHERE replyer LIKE '%${keyword}%'
+            OR replytext LIKE '%${keyword}%'
         </when>
         <!-- 전체 검색이 아닐 경우 -->
         <otherwise>
-            WHERE ${searchOption} like '%${keyword}%'
+            WHERE ${searchOption} LIKE '%${keyword}%'
         </otherwise>
     </choose>
 </sql>
@@ -124,12 +123,12 @@
     <choose>
         <!-- 검색옵션이 전체 검색일 경우 -->
         <when test="searchOption == 'all'">
-            WHERE userid like '%${keyword}%'
-            OR name like '%${keyword}%'
+            WHERE userid LIKE '%${keyword}%'
+            OR name LIKE '%${keyword}%'
         </when>
         <!-- 전체 검색이 아닐 경우 -->
         <otherwise>
-            WHERE ${searchOption} like '%${keyword}%'
+            WHERE ${searchOption} LIKE '%${keyword}%'
         </otherwise>
     </choose>
 </sql>

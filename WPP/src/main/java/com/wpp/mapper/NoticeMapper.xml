@@ -5,23 +5,25 @@
  <mapper namespace="NoticeMapper">
  
  	<insert id="insert">
-        INSERT INTO notice ( bnum, title, content, writer) VALUES (#{bnum},#{title},#{content},#{writer})
+        INSERT INTO notice ( bnum, title, content, writer) 
+        VALUES (#{bnum},#{title},#{content},#{writer})
     </insert>
     
      <select id="view" resultType="com.wpp.domain.Notice">
-        SELECT * FROM notice
+        SELECT * 
+        FROM notice
         WHERE bnum = #{bnum}
     </select>
  
  	<update id="uphit">
-        UPDATE notice SET hit = hit + 1 
+        UPDATE notice 
+        SET hit = hit + 1 
         WHERE bnum = #{bnum}
     </update>
     
     <update id="updateArticle">
-        UPDATE notice SET
-        	title = #{title},
-            content = #{content}
+        UPDATE notice 
+        SET title = #{title}, content = #{content}
         WHERE bnum = #{bnum}
     </update>
     
@@ -31,36 +33,39 @@
     </delete>
  	
  	<select id="viewlist" resultType="com.wpp.domain.Notice">	
-	 	SELECT bnum, title, content, writer, date, hit,
-        (SELECT COUNT(*) FROM notice_reply WHERE bnum= b.bnum) AS recnt
+	 	SELECT bnum, title, content, writer, date, hit, (SELECT COUNT(*) FROM notice_reply WHERE bnum= b.bnum) AS recnt
 	 	FROM notice b
    		<include refid="search"></include>
-		ORDER BY bnum desc, date desc LIMIT ${start}, 20;
+		ORDER BY bnum DESC, date DESC LIMIT ${start}, 20;
 	</select>
 	
 	<select id="countboard" resultType="int">
-		SELECT COUNT(*) FROM notice
+		SELECT COUNT(*) 
+		FROM notice
 		<include refid="search"></include>
 	</select>
 	
 	<select id="modifyview" resultType="com.wpp.domain.Notice">
-        SELECT bnum, title, content, writer, date, hit FROM notice
+        SELECT bnum, title, content, writer, date, hit 
+        FROM notice
         WHERE bnum = #{bnum}
     </select>
     
 	<select id="findByWriter" resultType="string">
- 		select writer from notice where bnum= #{bnum}
+ 		SELECT writer 
+ 		FROM notice 
+ 		WHERE bnum= #{bnum}
  	</select>
 
 	<sql id="search">
 	    <choose>
 	        <when test="searchOption == 'all'">
-	            WHERE writer like '%${keyword}%'
-	            OR content like '%${keyword}%'
-	            OR title like '%${keyword}%'
+	            WHERE writer LIKE '%${keyword}%'
+	            OR content LIKE '%${keyword}%'
+	            OR title LIKE '%${keyword}%'
 	        </when>
 	        <otherwise>
-	            WHERE ${searchOption} like '%${keyword}%'
+	            WHERE ${searchOption} LIKE '%${keyword}%'
 	        </otherwise>
 	    </choose>
 	</sql>
