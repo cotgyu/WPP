@@ -33,7 +33,7 @@ public class SigninFailureHandler extends SimpleUrlAuthenticationFailureHandler 
 		if (StringUtils.indexOf(accept, "html") > -1) {
 			String redirectUrl = request.getParameter(this.targetUrlParameter);
 			if (redirectUrl != null) {
-				super.logger.debug("Found redirect URL: " + redirectUrl);
+	//			super.logger.debug("Found redirect URL: " + redirectUrl);
 				getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 			} else {
 				super.onAuthenticationFailure(request, response, exception);
