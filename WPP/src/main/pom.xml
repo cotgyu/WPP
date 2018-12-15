@@ -274,7 +274,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <warSourceDirectory>webapp</warSourceDirectory>
+                    <warSourceDirectory>WPP/webapp</warSourceDirectory>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
