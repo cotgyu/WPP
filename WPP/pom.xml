@@ -249,12 +249,13 @@
 		 <artifactId>spring-context-support</artifactId>
 		 <version>${org.springframework-version}</version>
 	   </dependency>
-	
+
+
 	</dependencies>
 	
 
     <build>
-    <finalName>cot_pr1</finalName>
+    <finalName>wppp</finalName>
 
 		<resources>
 			<resource>
