@@ -100,7 +100,7 @@ public class FreeBoardController {
 	@RequestMapping(value="view", method=RequestMethod.GET)
     public ModelAndView view(@RequestParam int bnum, HttpSession session) throws Exception{
         // 조회수 증가 처리
-		freeboardService.uphit(bnum);
+		//freeboardService.uphit(bnum);
 		//bnum을 받아와 작성자 찾기
 		String userId = freeboardService.findByWriter(bnum);
 		//작성자로 이미지 불러오기
